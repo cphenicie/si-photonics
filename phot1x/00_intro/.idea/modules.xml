@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/00_intro.iml" filepath="$PROJECT_DIR$/.idea/00_intro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../../../../../luceda/luceda_academy_34-111/.idea/luceda_academy_34-111.iml" filepath="$PROJECT_DIR$/../../../../../../../luceda/luceda_academy_34-111/.idea/luceda_academy_34-111.iml" />
+      <module fileurl="file://$USER_HOME$/luceda/siepicfab-0.3.30/.idea/siepicfab-0.3.30.iml" filepath="$USER_HOME$/luceda/siepicfab-0.3.30/.idea/siepicfab-0.3.30.iml" />
+    </modules>
+  </component>
+</project>
