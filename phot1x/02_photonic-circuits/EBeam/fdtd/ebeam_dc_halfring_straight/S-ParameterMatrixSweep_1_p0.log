@@ -1,0 +1,10 @@
+FDTD Solutions Version 8.19.1466 (Mac 64bit)
+ expires (month/day/year): 4/1/2018
+using config file: /Users/lukasc/.config/Lumerical/FDTD Solutions.ini
+license host: lukascMacBook13
+current time: Tue Mar  6 20:47:56 2018
+Running on host: lukascMacBook13.local
+All processes are communicating and ready to proceed to simulation...
+Running fsp file: /Applications/Lumerical/FDTD Solutions/FDTD Solutions.app/Contents/MacOS/fdtd-engine -t 1 -remote -hide /Users/lukasc/Documents/GitHub/SiEPIC_EBeam_PDK/Lumerical_EBeam_CML/EBeam/fdtd/ebeam_dc_halfring_straight/S-ParameterMatrixSweep_1.fsp
+The file could not be found. The simulation cannot proceed.
+Error: parallel error, at least one process could not read the designated file. Process number: 0 had this error

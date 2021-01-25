@@ -1,0 +1,62 @@
+FDTD Solutions Version 8.19.1466 (Mac 64bit)
+ expires (month/day/year): 4/1/2018
+using config file: /Users/lukasc/.config/Lumerical/FDTD Solutions.ini
+license host: lukascMacBook13
+current time: Tue Mar  6 20:47:57 2018
+Running on host: lukascMacBook13.local
+All processes are communicating and ready to proceed to simulation...
+Running fsp file: /Applications/Lumerical/FDTD Solutions/FDTD Solutions.app/Contents/MacOS/fdtd-engine -t 1 -remote -hide /Users/lukasc/Documents/GitHub/SiEPIC_EBeam_PDK/Lumerical_EBeam_CML/EBeam/fdtd/ebeam_dc_halfring_straight/S-ParameterMatrixSweep_2.fsp
+number of processors is 4
+processors are distributed as: 2x2x1
+Running 3D Simulation
+Starting meshing
+Simulation size in gridpoints: 138 x 84 x 26
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0.494034 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 138 x 84 x 26
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0.420179 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 138 x 84 x 26
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0.391388 seconds of CPU time
+0 0
+0 0
+0 0
+finished material properties
+Meshing Time: 0 seconds, Init Electrical Material Time: 0 seconds, Init Magnetic Material Time: 0
+Using selected optimization level: 2
+Selecting 3d kernel for splitFieldDirection=0 and optLevel=2
+-----------------------------------------
+Beginning initialization of 3D Simulation
+Starting to add sources to simulation
+Adding 3D Mode source propagating in Y
+Using broadband source injection
+Starting to add boundary conditions to simulation
+Adding 3D PML BC
+Adding 3D Parallel BC
+Adding 3D PML BC
+Adding 3D Parallel BC
+Adding 3D Symmetric BC
+Adding 3D PML BC
+Starting to add monitors to Simulation
+Adding analysis monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Finished initialization of 3D Simulation
+-----------------------------------------
+All processes are communicating and ready to proceed to simulation...
+Starting 8184 total iterations
+1% complete. Max time remaining: 4 mins, 23 secs. Auto Shutoff: 1
+1% complete. Max time remaining: 3 mins, 55 secs. Auto Shutoff: 1
+2% complete. Max time remaining: 3 mins, 51 secs. Auto Shutoff: 1
+3% complete. Max time remaining: 4 mins, 28 secs. Auto Shutoff: 1
+4% complete. Max time remaining: 4 mins, 46 secs. Auto Shutoff: 1
+6% complete. Max time remaining: 4 mins, 22 secs. Auto Shutoff: 1
+6% complete. Max time remaining: 4 mins, 19 secs. Auto Shutoff: 1
