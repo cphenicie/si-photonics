@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.5.29)  31 JAN 2021 02:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.5.29)  14 FEB 2021 20:09
 entering extended mode
-**./proposal.tex
-(proposal.tex
+**./final_report.tex
+(final_report.tex
 LaTeX2e <2017-04-15>
 Babel <3.18> and hyphenation patterns for 75 language(s) loaded.
 
@@ -552,8 +552,8 @@ File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen135
 \Gin@req@width=\dimen136
-) (proposal.aux)
-\openout1 = `proposal.aux'.
+) (final_report.aux)
+\openout1 = `final_report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
 LaTeX Font Info:    ... okay on input line 11.
@@ -717,37 +717,37 @@ File: fig/layout.png Graphic file (type png)
 <use fig/layout.png>
 Package pdftex.def Info: fig/layout.png  used on input line 228.
 (pdftex.def)             Requested size: 234.87749pt x 149.44946pt.
- (proposal.bbl) [4
-
- <./fig/dngdw.png (PNG copy)> <./fig/layout.png>] (proposal.aux) ) 
+ (final_report.bbl) [4 <./fig/dngdw.png (PNG copy)> <./fig/layout.png>] (final_
+report.aux) ) 
 Here is how much of TeX's memory you used:
- 3635 strings out of 493305
- 54510 string characters out of 3129802
- 121407 words of memory out of 3000000
- 7114 multiletter control sequences out of 15000+200000
- 39483 words of font info for 84 fonts, out of 3000000 for 9000
+ 3638 strings out of 493305
+ 54589 string characters out of 3129802
+ 121416 words of memory out of 3000000
+ 7116 multiletter control sequences out of 15000+200000
+ 41068 words of font info for 86 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,8n,26p,864b,233s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Users/chr
-is/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc}<C:/Users/chri
-s/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><
-C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
-/cmmi10.pfb><C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/publi
-c/amsfonts/cm/cmmi5.pfb><C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/fonts
-/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/chris/AppData/Local/Programs/MiKT
-eX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/chris/AppData/Local/P
-rograms/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/chris/App
-Data/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/User
-s/chris/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.p
-fb><C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfont
-s/cm/cmr8.pfb><C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/pub
-lic/amsfonts/cm/cmsy10.pfb><C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/fo
-nts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/chris/AppData/Local/Programs/M
-iKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Users/chris/AppData/Local/Progra
-ms/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on proposal.pdf (4 pages, 628337 bytes).
+ 41i,12n,26p,868b,233s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/
+base/8r.enc}<C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/publi
+c/amsfonts/cm/cmex10.pfb><C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/chris/AppData/Local/Programs/Mi
+KTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/chris/AppData/Local
+/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/chris/A
+ppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/U
+sers/chris/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmm
+i8.pfb><C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/ams
+fonts/cm/cmr10.pfb><C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/fonts/type
+1/public/amsfonts/cm/cmr5.pfb><C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9
+/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/chris/AppData/Local/Programs
+/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/chris/AppData/Loc
+al/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/chri
+s/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C
+:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pf
+b><C:/Users/chris/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmri
+8a.pfb>
+Output written on final_report.pdf (4 pages, 638162 bytes).
 PDF statistics:
- 84 PDF objects out of 1000 (max. 8388607)
+ 88 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  51 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -230,6 +230,26 @@ Finally, we show the proposed layout for all the devices on this chip in figure 
   \label{fig:layout}
 \end{figure}
 
+\section{Fabrication defects}
+
+The above simulations were computed assuming an ideal waveguide that is 500 nm wide and 220 nm thick. In reality, we expect there to be variations from device to device due to imperfections in the thickness of the Si layer in the SOI wafer as well as imperfections in the fabrication of the waveguide. A corner analysis of the expected variations in waveguide properties as well as device characteristics given an up to 1 standard deviation variation in these parameters is shown in table \ref{tab:corner}. Note that the values of $n_{\text{eff}}$ and $n_g$ were computed through FDTD simulation using the specified width and  thickness, and the FSR was calculated for a simulated MZI with a length imbalance of 100 $\mu m$ using the resulting compact model of the waveguide.
+
+\begin{table}
+\centering
+\begin{tabular}{ r | r | r | r }
+  \hline
+  width, thickness [nm] & $n_{\text{eff}}$ & $n_g$ & FSR [nm] \\
+  \hline
+  (nominal) 500, 220.0  & 2.442            & 4.177 & 5.753  \\
+  470, 215.3            & 2.371            & 4.229 & 5.680  \\
+  470, 223.1            & 2.399            & 4.237 & 5.665  \\
+  510, 215.3            & 2.439            & 4.159 & 5.773  \\
+  510, 223.1            & 2.466            & 4.166 & 5.770  \\
+\end{tabular}
+\caption{Corner analysis of the effective index, group index, and free spectral range of an MZI with a length imbalance of 100 $\mu m$. The variations in thickness are a "worst case scenario" variation, using the the specified 1 standard deviation variability in the Si layer thickness in the SOI wafer from Soitec. The width range is an estimate of the variability in waveguide thickness form past fabrication runs at the SiEPIC foundry.}
+\label{tab:corner}
+\end{table}
+
 
 % \section{Fabrication}
 % 
