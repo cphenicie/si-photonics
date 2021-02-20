@@ -1,0 +1,36 @@
+language: python
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+
+# http://docs.travis-ci.com/user/caching/#pip-cache
+cache: pip
+
+notifications:
+  email:
+    - lbolla@gmail.com
+
+# TravisCI does not handle numpy/scipy well: https://gist.github.com/dan-blanchard/7045057
+
+# Setup anaconda
+before_install:
+  - export PYMAJORVER=`python -c "import sys; print(sys.version_info.major)"`
+  - wget http://repo.continuum.io/miniconda/Miniconda$PYMAJORVER-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/miniconda$PYMAJORVER/bin:$PATH
+  - conda update --yes conda
+  # The next couple lines fix a crash with multiprocessing on Travis
+  # and are not specific to using Miniconda
+  - sudo rm -rf /dev/shm
+  - sudo ln -s /run/shm /dev/shm
+
+# Install packages
+install:
+  # Make sure the versions here match what we have in requirements.txt
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION "numpy<2.0dev" "scipy<1.0dev" "matplotlib<2.0dev" "nose<2.0dev" "python-dateutil<3.0dev"
+  - pip install -r requirements.txt
+
+# Run tests
+script: python setup.py test

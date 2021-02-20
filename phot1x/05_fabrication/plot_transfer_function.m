@@ -12,7 +12,7 @@ legend_names = {'width=470nm,thick=215.3nm',
                 'width=470nm,thick=223.1nm',
                 'width=510nm,thick=215.3nm',
                 'width=510nm,thick=223.1nm',
-                'width=510nm,thick=215.3nm'};
+                'width=500nm,thick=220.0nm'};
 
 L1=100;
 L2=200;  % Units [µm], variable
@@ -58,7 +58,8 @@ for i=1:n_files
         '; thickness=', num2str(thick(i)), 'nm', ...
         '; fsr = ', num2str(fsr), 'nm', ...
         '; neff = ', num2str(neff_cm(lambda0)),...
-        '; ng = ', num2str(ng_mode)]))
+        '; ng = ', num2str(ng_mode),...
+        '; cm model: [', num2str(n1), ', ', num2str(n2), ', ',num2str(n3), ']']))
 
 end
 
