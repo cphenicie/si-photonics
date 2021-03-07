@@ -1,0 +1,68 @@
+wg_2D;
+
+# Note that the below script will use the global "modes" defined
+# in the wg_2D script
+set("number of trial modes",modes+2); # For some reason we do 2 extra
+
+lambda0 = 1.55e-6;
+delta_L = 100e-6;
+mode_num = 2; # Empircally, this is the TM mode
+save_dir = 'C:\Users\chris\Documents\GitHub\si-photonics\phot1x\07_final_analysis-exam\corner_analysis\';
+
+#thick_list = [215.3, 223.1] * 1e-9;
+#width_list = [470, 510 ] * 1e-9;
+thick_list = [220] * 1e-9;
+width_list = [500] * 1e-9;
+
+
+nt = length(thick_list);
+nw = length(width_list);
+
+ng_center = matrix(nt, nw); # Initalize an empty matrix
+
+
+for (ii=1:nt){
+    for (jj=1:nw){
+        
+        #print('width = ' + num2str(width_list(jj)) + 
+        #' thickness = ' + num2str(thick_list(ii)));
+        switchtolayout;
+        setnamed("waveguide","y span", width_list(jj));
+        setnamed("waveguide","z max", thick_list(ii));
+        n = findmodes; # Not sure why we save this as a variable n
+        ng_mode = abs( getdata (
+            "FDE::data::mode" + num2str(mode_num), "ng") );
+        #ng_center(ii,jj) = this_ng;
+        FSR = lambda0^2 / (ng_mode * delta_L);
+        print('FSR = ' + num2str(FSR));
+        
+        # Get the data to make a compact model
+        selectmode(mode_num);
+        setanalysis("track selected mode",1);
+        setanalysis("number of test modes",5);
+        setanalysis("detailed dispersion calculation",0);  # This feature is useful for higher-order dispersion.
+        setanalysis('stop wavelength',1.5e-6);
+        frequencysweep;    # perform sweep of wavelength and plot
+        
+        # Extract results
+        f=getdata("frequencysweep","f");
+        neff=getdata("frequencysweep","neff");
+        f_vg=getdata("frequencysweep","f_vg");
+        ng=c/getdata("frequencysweep","vg");
+        
+        # Fit compact model
+        lambda=c/f*1e6; # lambda in [microns]
+        x_fit = lambda-lambda0*1e6; # X vector 
+        y_fit = neff;           # Y vector 
+        n_fit = 2;              # order of the polynomial
+        X_fit = matrix(length(x_fit),n_fit+1);
+        for(i_fit=0:n_fit){ X_fit(1:length(x_fit),i_fit+1) = x_fit^i_fit; }
+        a_fit = mult(mult(inv(mult(transpose(X_fit),X_fit)),transpose(X_fit)),y_fit);        
+        
+        
+        param_str = 'width=' + num2str(width_list(jj) * 1e9) 
+                  + 'nm,thick=' + num2str(thick_list(ii) * 1e9) + 'nm';
+        fname = save_dir + 'wg_2D_sweep_wl_' + param_str + '.mat';
+        matlabsave(fname, f, neff, f_vg, ng, a_fit, ng_mode);
+    }
+}

@@ -2,7 +2,7 @@
 
 %\documentclass{article}
 \usepackage[utf8]{inputenc}
-\usepackage{amsmath,amsthm,amssymb,amsfonts, enumerate, graphicx}
+\usepackage{amsmath,amsthm,amssymb,amsfonts, enumerate, graphicx, hyperref}
 
 \title{Proposed Design Project for Phot1x}
 \date{January 2021}
@@ -230,7 +230,7 @@ Finally, we show the proposed layout for all the devices on this chip in figure 
   \label{fig:layout}
 \end{figure}
 
-\section{Fabrication defects}
+\section{Fabrication variability analysis}
 
 The above simulations were computed assuming an ideal waveguide that is 500 nm wide and 220 nm thick. In reality, we expect there to be variations from device to device due to imperfections in the thickness of the Si layer in the SOI wafer as well as imperfections in the fabrication of the waveguide. A corner analysis of the expected variations in waveguide properties as well as device characteristics given an up to 1 standard deviation variation in these parameters is shown in table \ref{tab:corner}. Note that the values of $n_{\text{eff}}$ and $n_g$ were computed through FDTD simulation using the specified width and  thickness, and the FSR was calculated for a simulated MZI with a length imbalance of 100 $\mu m$ using the resulting compact model of the waveguide.
 
@@ -246,14 +246,28 @@ The above simulations were computed assuming an ideal waveguide that is 500 nm w
   510, 215.3            & 2.439            & 4.159 & 5.773  \\
   510, 223.1            & 2.466            & 4.166 & 5.770  \\
 \end{tabular}
-\caption{Corner analysis of the effective index, group index, and free spectral range of an MZI with a length imbalance of 100 $\mu m$. The variations in thickness are a "worst case scenario" variation, using the the specified 1 standard deviation variability in the Si layer thickness in the SOI wafer from Soitec. The width range is an estimate of the variability in waveguide thickness form past fabrication runs at the SiEPIC foundry.}
+\caption{Corner analysis of the effective index, group index, and free spectral range of an MZI with a length imbalance of 100 $\mu m$. The variations in thickness are a ``worst case scenario" variation, using the the specified 1 standard deviation variability in the Si layer thickness in the SOI wafer from Soitec. The width range is an estimate of the variability in waveguide thickness form past fabrication runs at the SiEPIC foundry.}
 \label{tab:corner}
 \end{table}
 
+\section{Final device performance}
 
-% \section{Fabrication}
+TODO
+
+\section{Fabrication and measurement}
 % 
 % The waveguides used in this device will be fabricated on SOI wafer with a 220nm layer of Si on a buried oxide (BOX), and the waveguides will be fabricated to be 500 nm wide, with light coupled in via the quasi-TE mode of the waveguide. A finite-difference time domain (FDTD) simulation of this structure (shown in cross section, with an additional oxide capping layer) is shown in figure \ref{fig:mode}, with the spatial extent of the amplitude of the TE mode also shown.
+
+The photonic devices were fabricated using the NanoSOI MPW fabrication process by Applied Nanotools~\cite{ANT} which is based on direct-write 100 keV electron beam lithography technology. Silicon-on-insulator wafers of 200 mm diameter, 220 nm device thickness and 2 $\mu$m buffer oxide thickness are used as the base material for the fabrication. The wafer was pre-diced into square substrates with dimensions of 25x25 mm, and lines were scribed into the substrate backsides to facilitate easy separation into smaller chips once fabrication was complete. After an initial wafer clean using piranha solution (3:1 H$_2$SO$_4$:H$_2$O$_2$) for 15 minutes and water/IPA rinse, hydrogen silsesquioxane (HSQ) resist was spin-coated onto the substrate and heated to evaporate the solvent. The photonic devices were patterned using a Raith EBPG 5000+ electron beam instrument using a raster step size of 5 nm. The exposure dosage of the design was corrected for proximity effects that result from the backscatter of electrons from exposure of nearby features. Shape writing order was optimized for efficient patterning and minimal beam drift. After the e-beam exposure and subsequent development with a tetramethylammonium sulfate (TMAH) solution, the devices were inspected optically for residues and/or defects. The chips were then mounted on a 4” handle wafer and underwent an anisotropic ICP-RIE etch process using chlorine after qualification of the etch rate. The resist was removed from the surface of the devices using a 10:1 buffer oxide wet etch, and the devices were inspected using a scanning electron microscope (SEM) to verify patterning and etch quality. A 2.2 $\mu$m oxide cladding was deposited using a plasma-enhanced chemical vapour deposition (PECVD) process based on tetraethyl orthosilicate (TEOS) at 300$^{\text{o}}$C. Reflectrometry measurements were performed throughout the process to verify the device layer, buffer oxide and cladding thicknesses before delivery.
+
+To characterize the devices, a custom-built automated test setup~\cite{Chrostowski2015, MLP} with automated control software written in Python was used~\cite{siepic}.  An Agilent 81600B tunable laser was used as the input source and Agilent 81635A optical power sensors as the output detectors. The wavelength was swept from 1500 to 1600 nm in 10 pm steps.  A polarization maintaining (PM) fiber array was used to couple light in/out of the chip~\cite{PLC}. This maintained the polarization state of the light to couple the TE polarization into the grating couplers~\cite{Wang2014}.
+
+
+\section*{Acknowledgments}
+
+I acknowledge the edX UBCx Phot1x Silicon Photonics Design, Fabrication and Data Analysis course, which is supported by the Natural Sciences and Engineering Research Council of Canada (NSERC) Silicon Electronic-Photonic Integrated Circuits (SiEPIC) Program. The devices were fabricated by Cameron Horvath at Applied Nanotools, Inc. Hossam Shoman performed the measurements at The University of British Columbia. I acknowledge Lumerical Solutions, Inc., Mathworks, Mentor Graphics, Python, and KLayout for the design software.
+
+
 
 % \clearpage
 

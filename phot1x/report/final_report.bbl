@@ -5,4 +5,26 @@ L.~Chrostowski and M.~Hochberg, {\em {Silicon Photonics Design: From Device to
   System}}.
 \newblock Cambridge University Press, 2015.
 
+\bibitem{ANT}
+``{Applied Nanotools Inc.}.'' \url{http://www.appliednt.com/nanosoi}.
+\newblock Edmonton, Canada.
+
+\bibitem{MLP}
+``{Maple Leaf Photonics}.'' \url{http://mapleleafphotonics.com}.
+\newblock Seattle WA, USA.
+
+\bibitem{siepic}
+\url{https://siepic.ca/fabrication/}.
+\newblock using Python code developed by Michael Caverley.
+
+\bibitem{PLC}
+``{PLC Connections}.'' \url{www.plcconnections.com}.
+\newblock Columbus OH, USA.
+
+\bibitem{Wang2014}
+Y.~Wang, X.~Wang, J.~Flueckiger, H.~Yun, W.~Shi, R.~Bojko, N.~A.~F. Jaeger, and
+  L.~Chrostowski, ``{Focusing sub-wavelength grating couplers with low back
+  reflections for rapid prototyping of silicon photonic circuits},'' {\em
+  Optics Express}, vol.~22, no.~17, p.~20652, 2014.
+
 \end{thebibliography}
