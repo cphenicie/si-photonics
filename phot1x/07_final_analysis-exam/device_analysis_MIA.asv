@@ -1,0 +1,301 @@
+%% User inputs
+% dL = 219.366; % um
+% data_name = 'Phot1x-DataSets/DataSet1/ZiheGao_MZI17_265_Scan1.mat';
+
+dL = 2*(2297.40 - 11.69) + 87.81 - 82.63;  % 297.4; % um
+% dL = 2*2200;  % 297.4; % um
+% dL = 2*2150;  % 297.4; % um
+data_name = 'data\christopherphenicie_MIA.mat';
+
+loopback_name = 'data\christopherphenicie_GCCal.mat';
+% loopback_name = 'Phot1x-DataSets/DataSet1/ZiheGao_MZI17_265_Scan1.mat';
+
+PORT=2; % Which Fibre array port is the output connected to?
+
+% Compact model for 500nm x 220nm waveguide using Lumerical MODE
+simulated_n = [2.4489, -1.1337, -0.0451];
+
+% Set up loading corner analysis data
+corner_file_dir = 'C:\Users\chris\Documents\GitHub\si-photonics\phot1x\05_fabrication\corner_analysis';
+corner_file_names = {'wg_2D_sweep_wl_width=470nm,thick=215.3nm.mat',
+                     'wg_2D_sweep_wl_width=470nm,thick=223.1nm.mat',
+                     'wg_2D_sweep_wl_width=510nm,thick=215.3nm.mat',
+                     'wg_2D_sweep_wl_width=510nm,thick=223.1nm.mat'};
+                             
+corner_legend_names = {'(470nm x 215.3nm)',
+                       '(470nm x 223.1nm)',
+                       '(510nm x 215.3nm)',
+                       '(510nm x 223.1nm)'};
+
+% Fit to the data in this range. Make sure you have loopback data in this
+% range!!
+lambda_min = 1.535e-6;  % 1.521e-6;
+lambda_max = 1.546e-6;  % 1.569e-6;
+% lambda0 = 1.545;
+
+
+%% Use the loopback data to subtract the background due non-device effects
+% These include the bandwidth of the GCs, waveguide loss, bending loss, etc
+
+load(loopback_name);
+lambda_loopback = scandata.wavelength'; % scanResults(1,PORT).Data(:,1)/1e9;
+amplitude_loopback = scandata.power(:, PORT);  % scanResults(1,PORT).Data(:,2);
+
+% Curve fit data to a polynomial for baseline correction
+bkgd_center = mean(lambda_loopback);
+p_bkgd=polyfit((lambda_loopback - bkgd_center)*1e6, amplitude_loopback, 4);
+
+% % If the calibration file is another MZI, the above fit will be through the 
+% % middle of the transmission profile, but the baseline we want to correct
+% % is the overall envelope, which is the fit to the maximum of the fringes.
+% % One way to do this is to adjust the baseline to account for the
+% % difference between this fit baseline and the maximum of the fringes
+% % Uncomment the lines below to do this
+
+% amplitude_baseline=polyval(p_bkgd,(lambda_loopback - bkgd_center)*1e6); 
+% extra_offset = max(amplitude_baseline) - max(amplitude_loopback);
+% p_bkgd(end) = p_bkgd(end) - extra_offset;
+
+%% Background subtract the data
+% Data is stored in variable "scanResults".
+% There are two columns - wavelength (1), and amplitude (2)
+load(data_name);
+lambda_raw = scandata.wavelength'; % scanResults(1,PORT).Data(:,1)/1e9;
+amplitude_raw= scandata.power(:,PORT); % scanResults(1,PORT).Data(:,2);
+amplitude_baseline = polyval(p_bkgd,(lambda_raw - bkgd_center)*1e6); 
+amplitude_corrected = amplitude_raw - amplitude_baseline;
+
+lambda_fit=lambda_min:min(diff(lambda_raw)):lambda_max;
+
+% For some reason, the suggested approach here is to interpolate the 
+% data in order to fit it. This seems very wrong
+amplitude_fit = interp1(lambda_raw, amplitude_corrected, lambda_fit,'linear');
+% check if there are -infinity data points
+amplitude_fit(find(amplitude_fit==-inf))=-50;
+
+%% Plot simulation vs. experiment
+
+lambda0 = mean(lambda_fit)*1e6;
+% MZI transfer function, holding constant the values for lambda0 and dL
+fit_T_MZI = @(X, lambda) ...
+            T_MZI(lambda0, dL, X, lambda);
+fit_T_MZI_anylength = @(X, lambda) ...
+            T_MZI_anylength(lambda0, X, lambda);
+% Background correction means no losses, X(4) (=alpha) = 0 and X(5) = 0
+x0 = [simulated_n, 0, 0, dL] ;
+
+figure;
+hold on
+
+plot(lambda_raw*1e6, amplitude_raw, 'DisplayName', 'Raw data');
+plot(lambda_loopback*1e6, amplitude_loopback, 'DisplayName', 'Loopback');
+plot(lambda_fit*1e6, amplitude_fit, 'DisplayName', 'Baseline corrected');
+plot(lambda_fit*1e6, fit_T_MZI(x0, lambda_fit*1e6), 'DisplayName', 'Simulation');
+
+xlabel ('Wavelength [\mum]');
+ylabel ('Transmission [dB]');
+axis tight
+legend('Location', 'southwest')
+title (join(['MZI with \DeltaL = ', num2str(dL), '\mum']));
+xlim([lambda_min*1e6, lambda_max*1e6])
+
+%% Fit the FSR using findPeaks
+figure;
+hold on;
+
+x_data = lambda_fit*1e6;
+y_data = smoothdata(amplitude_fit, 'gaussian', 3);
+
+plot(x_data, y_data)
+[pks, locs] = findpeaks(y_data);
+max_wl = x_data(locs);
+plot(max_wl, pks, 'o')
+
+lambda = mean(lambda_fit);
+fsr = abs(mean(diff(max_wl)));
+% ng = lambda^2 / (fsr * delta_L)
+% ng = lambda^2 / (fsr * delta_L_list(i))
+
+xlabel('Wavelength [nm]')
+ylabel('Transmission [I_o / I_i]')
+title(sprintf('Measured FSR = %.2f nm -> deltaL = %.2f um at ng = 4.21 and 1550nm',...
+    fsr*1e3, 1.55^2/(4.21*fsr)))
+legend('Sim. Data', 'Extracted peaks')
+
+
+%% Generate inital guess for the fit
+
+% % This is the code from class, it doesn't seem to work...?
+% windowSize = floor(1e-3*length(lambda_fit)); 
+% b = (1/windowSize)*ones(1,windowSize);
+% amplitude_smooth=filter(b,1,amplitude_fit);
+% % FIND PEAKS
+% [pks,x_values,w,p]=findpeaks(-amplitude_smooth, lambda_fit, ...
+%     'minPeakProminence',4,'Annotate','extents');
+% lambda_ng = (x_values(1:end-1)+x_values(2:end))/2;
+% FSR=(x_values(2:end)-x_values(1:end-1));
+% 
+% ng = abs(lambda_ng.^2/1/(dL*1e-6)./FSR);
+% % find average ng from all reasonable ng values:
+% % indexes = find(gt(ng,3)); ng=ng(indexes); lambda_ng = lambda_ng(indexes); FSR = FSR(indexes);
+% % indexes = find(lt(ng,5)); ng=ng(indexes); lambda_ng = lambda_ng(indexes); FSR = FSR(indexes);
+% ng_av = mean(ng);
+% % Part 1 - n1
+% % lambda0 is in microns.
+% lambda0 = x_values(floor(length(x_values)/2)) * 1e6;
+% n1_initial=2.4;
+% modeNumber = n1_initial * dL / lambda0 - 0.5;
+% n1 = (2*floor(modeNumber)+1)*lambda0/2/dL;
+% % Part 1 - n2 from ng_av
+% n2 = (n1-ng_av)/lambda0;
+% % Part 3 - n3 from slope of ng vs. lambda, to get the dispersion
+% f_line = @(x,xdata)x(2)*xdata+x(1);
+% [xfit,resnorm]  = lsqcurvefit(f_line,[ng_av 0],lambda_ng*1e6,ng);
+% r=corrcoef(ng,f_line(xfit, lambda_ng*1e6));
+% r2_ng=r(1,2).^2;
+% n3 = -xfit(2)/2/lambda0;
+% Dispersion0 = -(lambda0*1e-6) / 299792458 * 2* (n3*1e12) * 1e12 /1e9 /1e-3;     	
+% disp (['(estimate from ng slope) Dispersion [ps/nm/km]: ' num2str(Dispersion0) ])
+% if lt(r2_ng,0.01)   % only use the result if the fit is good
+%   n3 = 0;
+% end
+% 
+% 
+% nx_init = [n1, n2, n3]
+
+nx_init = [2.45, -1.0, 0]; % [2.46, -1.1385, -0.0646]
+% nx_init = simulated_n;
+
+alpha_init = 0.01e-3;  % propagation loss [micron^-1]
+device_loss = 0.1;
+
+%% Fit the data
+
+x0=[nx_init, alpha_init, device_loss, dL];
+
+options=optimoptions(@lsqcurvefit, 'MaxFunctionEvaluations', 100000,...
+    'FunctionTolerance', 1e-9, 'StepTolerance', 1e-9,...
+    'MaxIterations', 100000);
+
+lb = [2.43, -inf, -1.5, 0, 0, dL-5];
+ub = [2.47, inf, 0.5, inf, inf, dL+5];
+
+[xfit,resnorm,residual,exitflag,output,lambda,jacobian] = ...
+    lsqcurvefit(fit_T_MZI, x0, lambda_fit*1e6, amplitude_fit, lb, ub, options);
+ci = nlparci(xfit,residual,'jacobian',jacobian);
+xerr = (ci(:,1) - ci(:,2)) / 4;
+xfit
+xerr'
+save('MZI300um_fit.mat', 'xfit', 'xerr')
+
+[xfit,resnorm] = lsqcurvefit(fit_T_MZI_anylength, x0, lambda_fit*1e6, amplitude_fit,... 
+    lb, ub, options);
+xfit(1:5)
+xfit(6)
+% r=corrcoef(amplitude_fit, fit_T_MZI(xfit, lambda_fit * 1e6));
+% r2=r(1,2).^2
+
+%% Plot fit vs experiment
+
+figure;
+hold on
+
+%plot(lambda_raw*1e6, amplitude_raw, 'DisplayName', 'Raw data');
+%plot(lambda_loopback*1e6, amplitude_loopback, 'DisplayName', 'Loopback');
+plot(lambda_fit*1e6, amplitude_fit, 'DisplayName', 'Baseline corrected');
+% plot(lambda_fit*1e6, fit_T_MZI(xfit, lambda_fit*1e6), 'DisplayName', 'Fit');
+plot(lambda_fit*1e6, fit_T_MZI_anylength(xfit, lambda_fit*1e6), 'DisplayName', 'Fit');
+
+xlabel ('Wavelength [\mum]');
+ylabel ('Transmission [dB]');
+axis tight
+legend('Location', 'southwest')
+title (join(['MZI with \DeltaL = ', num2str(dL), '\mum']));
+xlim([lambda_min*1e6, lambda_max*1e6])
+
+
+%% Extract ng and plot vs. theory
+
+neff_fit = neff(lambda0, xfit(1:3), lambda_fit*1e6);
+ng_fit = ng_func(neff_fit, lambda_fit*1e6);
+neff_sim = neff(lambda0, simulated_n, lambda_fit*1e6);
+ng_sim = ng_func(neff_sim, lambda_fit*1e6);
+
+figure;
+hold on
+
+plot(lambda_fit*1e6, ng_fit, '-', 'DisplayName', 'Fit', 'Linewidth', 2)
+label = 'Simulated wg (220nm x 500nm)';
+plot(lambda_fit*1e6, ng_sim, 'DisplayName', label, 'Linewidth', 2)
+
+% Plot corner analysis
+for i=1:length(corner_file_names)
+
+   load(fullfile(corner_file_dir, corner_file_names{i}))
+   n1 = real(a_fit(1));
+   n2 = real(a_fit(2));
+   n3 = real(a_fit(3));
+ 
+   neff_corner = neff(lambda0, [n1, n2, n3], lambda_fit*1e6);
+   ng_corner = ng_func(neff_corner, lambda_fit*1e6);
+   label = join(['Corner ', corner_legend_names{i}]);
+   plot(lambda_fit*1e6, ng_corner, 'DisplayName', label)
+end
+    
+
+legend()
+xlabel('Wavelength [\mum]')
+ylabel('Group index')
+
+%% Some useful functions
+
+% effective index:
+function n = neff(lambda0, nx, lambda)
+    n = (nx(1) + nx(2).*(lambda-lambda0) + nx(3).*(lambda-lambda0).^2);
+end
+
+% complex propagation constant
+function b = beta(lambda0, nx, alpha, lambda)
+    % nx: the n1, n2, n3 parameters for the waveguide compact model
+    % alpha: the waveguide attenuation coefficient in 1/um
+    % lambda: List of wavelengths (in um)
+    % lambda0: Center wavelength for the waveguide compact model (in um)
+    n = neff(lambda0, nx, lambda);
+    b = (2*pi*n./lambda - 1i*alpha/2*ones(1,length(lambda)));
+end
+
+% MZI transfer function
+function t = T_MZI(lambda0, dL, X, lambda)
+    % lambda0: Center wavelength for the waveguide compact model (in um)
+    % dL: The MZI length imbalance (in um)
+    % X(1:3): the n1, n2, n3 parameters for the waveguide compact model
+    % X(4): the waveguide attenuation coefficient ("alpha") in 1/um
+    % X(5): the wavelength-independent loss in the device (in dB).
+    % lambda: List of wavelengths (in um)
+
+    b = beta(lambda0, X(1:3), X(4), lambda);
+    t = (10*log10( 0.25 * abs(1+exp(-1i*b*dL)).^2) + X(5) );
+end
+
+% MZI transfer function
+function t = T_MZI_anylength(lambda0, X, lambda)
+    % lambda0: Center wavelength for the waveguide compact model (in um)
+    % dL: The MZI length imbalance (in um)
+    % X(1:3): the n1, n2, n3 parameters for the waveguide compact model
+    % X(4): the waveguide attenuation coefficient ("alpha") in 1/um
+    % X(5): the wavelength-independent loss in the device (in dB).
+    % X(6): The length imbalance of the interferometer
+    % lambda: List of wavelengths (in um)
+
+    b = beta(lambda0, X(1:3), X(4), lambda);
+    t = (10*log10( 0.25 * abs(1+exp(-1i*b*X(6))).^2) + X(5) );
+end
+
+% Group index, from finite differences of the effective index
+function ng_arr = ng_func(neff, lambda)
+    % lambda: array of wavelengths
+    % neff: array of effective indices evaluated at each wavelength
+    dndlambda = diff(neff) ./ diff(lambda); 
+    dndlambda = [dndlambda, dndlambda(end)]; % Make derivative same size
+    ng_arr = (neff - lambda .* dndlambda);
+end

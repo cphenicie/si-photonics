@@ -4,7 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amsthm,amssymb,amsfonts, enumerate, graphicx, hyperref}
 
-\title{Proposed Design Project for Phot1x}
+\title{Measurement of a photonic waveguide group index via interferometry}
 \date{January 2021}
 \author{christopher\_phenicie}
 
@@ -15,12 +15,12 @@
 \section{Introduction}
 \label{sec:intro}
 
-The proposed chip will contain a total of seven interferometers, providing data for two different tests. The first test is understanding the relationship between the free spectral range (FSR) of a Mach-Zehnder interferometer (MZI) as the difference in lengths of the two legs is changed, which will allow for a careful measurement of the group index of the waveguides used in the MZI. The second test is looking at the repeatability of the waveguides by looking at two nominally identical Michelson interferometers with a large ($\sim$~1mm) path length difference. These interferometers will be sensitive to small changes in the group index due to fabrication imperfections, and we can bound the fabrication imperfections based on the observed variations in the measured FSR.
+In this work, we will measure the group index of a silicon photonic waveguide taking advantage of high-sensitivity interferometry. The proposed chip will contain a total of seven interferometers. With a proper understanding of the transfer function of an interferometer as the length imbalance of the two legs ($\Delta$L) is changed, it is possible to make a careful measurement of the group index of the waveguides the interferometer is composed of. The proposed chip will include two different interferometer geometries, Mach-Zehnder interferometers (MZIs) to make measurements for relatively small imbalances ($\Delta$L $\sim 100\mu$m), and Michelson interferometers (MIs) to make meausurements for relatively large imbalances ($\Delta$L $>$ 1 mm). We choose to work with MIs for this application because the geometry allows for longer length imbalances given the same amount of space on a chip. These interferometers will be sensitive to small changes in the group index due to fabrication imperfections, and we can bound the fabrication imperfections based on the observed variations in the transfer function.
 
 \section{Theory}
 \label{sec:theory}
 
-The group index of a material can be measured from the FSR of the fringes in an unbalanced interferometer of known length difference $\Delta L$. Let us consider the case of an interferometer composed of lossless Si photonic waveguides. As described in~\cite{Chrostowski2015}, an MZI can be built on a silicon photonic chip using two Y-branches, one as a splitter to split the incoming light between two waveguides of length $L_1$ and $L_2$, and the other Y-branch used as a coupler to allow the light to interfere. We can describe the power measured at the output of the interferometer as follows:
+The group index of a material can be measured from the transfer function of an unbalanced interferometer of known length difference $\Delta L$. Let us consider the case of an interferometer composed of lossless Si photonic waveguides. As described in~\cite{Chrostowski2015}, an MZI can be built on a silicon photonic chip using two Y-branches, one as a splitter to split the incoming light between two waveguides of length $L_1$ and $L_2$, and the other Y-branch used as a coupler to allow the light to interfere. We can describe the power measured at the output of the interferometer as follows:
 
 First, the incoming light described by the electric field $E_i$ is split into the two branches of the Y-branch equally, meaning the field into the two waveguides are $E_1 = E_2 = \frac{E_i}{\sqrt{2}}$. These fields are then propagated along the waveguides, which have effective index $n_1$ and $n_2$ and lengths $L_1$ and $L_2$ respectively. Therefore, the fields at the opposite end of the waveguides are $E_{o1} = \frac{E_i}{\sqrt{2}} e^{-i \beta_1 L_1}$ and $E_{o2} = \frac{E_i}{\sqrt{2}} e^{-i \beta_2 L_2}$ where we define the propagation constant 
 
@@ -47,6 +47,7 @@ For now, we will assume that the waveguides are made of identical material, such
 
 \begin{equation}
 \frac{I_o}{I_i} = \frac{1}{2} \left(1 + \cos{(\beta \Delta_L)}\right) = \frac{1}{2} \left(1 + \cos{\left(\frac{2\pi n_{\text{eff}} \Delta_L}{\lambda}\right)}\right)
+\label{eq:trans_simple}
 \end{equation}
 
 Note that this is a periodic function that varies with the wavelength of the light $\lambda$. So, if we take a spectrum of this device, that is, measure $I_o$ for a range of different wavelengths, we should see a periodic pattern, undergoing one full oscillation between the wavelength $\lambda_1$ and $\lambda_2$ satisfying the relationship 
@@ -92,30 +93,32 @@ n_g = \frac{\lambda^2}{FSR \times \Delta L}
 \label{eq:solveng}
 \end{equation}
 
-Thus, we will use equation \ref{eq:solveng} on the spectrum of the first five interferometers and compare this with the models that will be computed in section \ref{sec:model}.
+We could use equation \ref{eq:solveng} to calculate the group index from the transmission the spectrum of and MZI, however we will be able to get an even better estimate of the waveguide parameters fitting to the full transfer function in equation \ref{eq:trans_simple}. We do this to generate a ``compact model" of the waveguides in the MZIs and MIs, and compare this with the models that will be computed in section \ref{sec:model}. Note that the transfer function for the MI is the same as the MZI, but one must take care to account for both passes along the legs of the interferometer to compute the true $\Delta$L.
 
-We can then test the variability of this value due to fabrication imperfections. To maximize sensitivity to imperfections, we will use a long path length difference between the two legs, and use a Michelson interferometer (which gives twice the path length difference for the same length imbalance as the MZI). We can compute the variation in the FSR between the different devices to put a bound on the variation in the width of the waveguide. Specifically, we can bound this by assuming all the observed variation is due to width variations. Then, differentiating equations \ref{eq:FSR} with respect to the waveguide width, we find
+%We can then test the variability of this value due to fabrication imperfections. To maximize sensitivity to imperfections, we will use a long path length difference between the two legs, and use a Michelson interferometer (which gives twice the path length difference for the same length imbalance as the MZI). 
 
-\begin{equation}
-\frac{d(FSR)}{dw} = \frac{-\lambda^2}{\Delta L \, n_g^2} \frac{dn_g}{dw}
-\end{equation}
-where recall that for a Michelson interferometer $\Delta L$ is twice the length imbalance. The quantity $\frac{dn_g}{dw}$ can be computed in simulation, so that we can arrive at the following equation relating the measured difference in FSR to the implied maximum width variation:
-
-\begin{equation}
-\Delta w = - \frac{\Delta (FSR) \times \Delta L \times n_g^2}{\lambda^2 \times \frac{dn_g}{dw}}
-\label{eq:dw}
-\end{equation}
+%We can compute the variation in the FSR between the different devices to put a bound on the variation in the width of the waveguide. Specifically, we can bound this by assuming all the observed variation is due to width variations. Then, differentiating equations \ref{eq:FSR} with respect to the waveguide width, we find
+%
+%\begin{equation}
+%\frac{d(FSR)}{dw} = \frac{-\lambda^2}{\Delta L \, n_g^2} \frac{dn_g}{dw}
+%\end{equation}
+%where recall that for a Michelson interferometer $\Delta L$ is twice the length imbalance. The quantity $\frac{dn_g}{dw}$ can be computed in simulation, so that we can arrive at the following equation relating the measured difference in FSR to the implied maximum width variation:
+%
+%\begin{equation}
+%\Delta w = - \frac{\Delta (FSR) \times \Delta L \times n_g^2}{\lambda^2 \times \frac{dn_g}{dw}}
+%\label{eq:dw}
+%\end{equation}
 
 \section{Modeling and simulation}
 \label{sec:model}
 
 
-The interferometers in the project will be constructed from strip waveguides etched into an SOI chip with a 220 nm thick Si layer and a capping oxide layer. We will choose the waveguides to be 500nm wide and we will work with the TE mode of the waveguide. These structures can be simulated using the finite difference time domain (FDTD) technique. As an example, the spatial distribution of the waveguide mode from this FDTD simulation is shown in figure \ref{fig:mode}
+The interferometers were composed of strip waveguides etched into an SOI chip with a 220 nm thick Si layer and a capping oxide layer. The designed widths of the waveguides were 500nm, and light was coupled into the TE mode of the waveguide. This structure can be simulated using the finite difference time domain (FDTD) technique. As an example, the spatial distribution of the waveguide mode from this FDTD simulation is shown in figure \ref{fig:mode}
 
 \begin{figure}[t!]
   \centering
   \includegraphics[width = 3.25in]{fig/waveguide_TE.jpg}
-  \caption{FDTD simulation of quasi-TE mode of the waveguides we will use in this project, computed using Lumerical MODE. This image is oriented in a plane perpendicular to the direction of light propagation.}
+  \caption{FDTD simulation of quasi-TE mode of the waveguides used in this work, computed using Lumerical MODE. This image is oriented in a plane perpendicular to the direction of light propagation.}
   \label{fig:mode}
 \end{figure}
 
@@ -140,9 +143,10 @@ This information can then be distilled into a compact model for this waveguide b
 
 \begin{equation}
 n(\lambda)\approx a_0 + a_1(\lambda - \lambda_0) + a_2(\lambda - \lambda_0)^2
+\label{eq:cm}
 \end{equation}
 
-Where we arrive at the following fit parameters from the above data:
+Where we arrive at the following fit parameters from the FDTD simulations (for wavelength in units of $\mu$m):
 
 $ a_0 = 2.4489, a_1 = -1.1337, a_2 = -0.0451 $.
 
@@ -160,12 +164,12 @@ The basic MZI circuit will be composed of Y-branches on the input and output, wi
   \label{fig:schematic}
 \end{figure}
 
-We can simulate the behavior of this device in Lumerical INTERCONNECT, as shown in figure \ref{fig:deltaL}. We can see the calculated FSR from these simulations are well captured by the transfer function of the MZI (eq \ref{eq:trans_full}) and the predicted FSR computed from it (i.e. eq \ref{eq:FSR}), as shown in table \ref{tab:MZI}.
+We can simulate the behavior of this device in Lumerical INTERCONNECT, as shown in figure \ref{fig:deltaL}. We can see the calculated FSR from these simulations are well captured by the transfer function of the MZI (eq \ref{eq:trans_simple}) and the predicted FSR computed from it (i.e. eq \ref{eq:FSR}), as shown in table \ref{tab:MZI}.
 
 \begin{figure}[t!]
   \centering
   \includegraphics[width = 3.25in]{fig/MZI_length_variation.png}
-  \caption{Simulated transfer function of the MZI device shown in figure \ref{fig:schematic} for two different length imbalances in the interferometer. Only two of the transfer functions are shown for clarity, the full data set is summarized in table \ref{tab:MZI}}
+  \caption{Simulated transfer function of the MZI device shown in figure \ref{fig:schematic} for two different length imbalances in the interferometer. Only two of the transfer functions are shown for clarity, the full set of simulations is summarized in table \ref{tab:MZI}}
   \label{fig:deltaL}
 \end{figure}
 
@@ -187,7 +191,7 @@ We can simulate the behavior of this device in Lumerical INTERCONNECT, as shown 
 \label{tab:MZI}
 \end{table}
 
-The proposed Michelson interferometer is shown in figure \ref{fig:mich-scheme}, where we have used loop waveguides as mirrors and we are using broadband directional coupler to split the light in order to be able to measure the reflected signal. Note the large length imbalance of the two branches.
+The proposed Michelson interferometer is shown in figure \ref{fig:mich-scheme}, where we have used loop waveguides as mirrors and we are using broadband directional couplers to split the light in order to be able to measure the reflected signal. Note the large length imbalance of the two branches.
 
 \begin{figure}[t!]
   \centering
@@ -196,36 +200,36 @@ The proposed Michelson interferometer is shown in figure \ref{fig:mich-scheme}, 
   \label{fig:mich-scheme}
 \end{figure}
 
-We can simulate the transfer function of this device in Lumerical INTERCONNECT for waveguides of width 500nm and 510nm. The spectrum contains many oscillations, but we can see that there is a phase shift of $\pi$ between the devices in just a 5nm bandwidth, as shown in figures \ref{fig:mich-in} and \ref{fig:mich-out}. If we compute the change in FSR between the entire 50nm bandwidth of the grating couplers, we should have sensitivity much better than this.
+%We can simulate the transfer function of this device in Lumerical INTERCONNECT for waveguides of width 500nm and 510nm. The spectrum contains many oscillations, but we can see that there is a phase shift of $\pi$ between the devices in just a 5nm bandwidth, as shown in figures \ref{fig:mich-in} and \ref{fig:mich-out}. If we compute the change in FSR between the entire 50nm bandwidth of the grating couplers, we should have sensitivity much better than this.
 
-\begin{figure}[t!]
-  \centering
-  \includegraphics[width = 3.25in]{fig/michaelson_in-phase.png}
-  \caption{Transfer function of two Michelson interferometers with different width, zoomed in on a region where the transfer functions are nearly in phase.}
-  \label{fig:mich-in}
-\end{figure}
+%\begin{figure}[t!]
+%  \centering
+%  \includegraphics[width = 3.25in]{fig/michaelson_in-phase.png}
+%  \caption{Transfer function of two Michelson interferometers with different width, zoomed in on a region where the transfer functions are nearly in phase.}
+%  \label{fig:mich-in}
+%\end{figure}
+%
+%\begin{figure}[t!]
+%  \centering
+%  \includegraphics[width = 3.25in]{fig/michaelson_out-of-phase.png}
+%  \caption{Transfer function of two Michelson interferometer with different width, zoomed in on a region where the transfer functions are approximately $\pi$ shifted from each other.}
+%  \label{fig:mich-out}
+%\end{figure}
 
-\begin{figure}[t!]
-  \centering
-  \includegraphics[width = 3.25in]{fig/michaelson_out-of-phase.png}
-  \caption{Transfer function of two Michelson interferometer with different width, zoomed in on a region where the transfer functions are approximately $\pi$ shifted from each other.}
-  \label{fig:mich-out}
-\end{figure}
+%As a sanity check that this analysis should work, we can calculate the difference in FSR between these two data sets and plug this into equation \ref{eq:dw}. Before we can do this, we need to compute a value of $\frac{dn_g}{dw}$. This can be done by simulating $n_g$ near 1550nm for a few different waveguide widths in Lumerical MODE, and performing a linear fit on the resulting data, as shown in figure \ref{fig:dngdw}, which gives a value of $-1.691 \times 10^{-3} \text{nm}^{-1}$. From this, we can calculate a difference in width $\Delta w = 9.6$ nm on a pair of simulations that had a difference in width of 10 nm.
 
-As a sanity check that this analysis should work, we can calculate the difference in FSR between these two data sets and plug this into equation \ref{eq:dw}. Before we can do this, we need to compute a value of $\frac{dn_g}{dw}$. This can be done by simulating $n_g$ near 1550nm for a few different waveguide widths in Lumerical MODE, and performing a linear fit on the resulting data, as shown in figure \ref{fig:dngdw}, which gives a value of $-1.691 \times 10^{-3} \text{nm}^{-1}$. From this, we can calculate a difference in width $\Delta w = 9.6$ nm on a pair of simulations that had a difference in width of 10 nm.
-
-\begin{figure}[t!]
-  \centering
-  \includegraphics[width = 3.25in]{fig/dngdw.png}
-  \caption{Variation in group index of the waveguide as a function of the waveguide width}
-  \label{fig:dngdw}
-\end{figure}
+%\begin{figure}[t!]
+%  \centering
+%  \includegraphics[width = 3.25in]{fig/dngdw.png}
+%  \caption{Variation in group index of the waveguide as a function of the waveguide width}
+%  \label{fig:dngdw}
+%\end{figure}
 
 Finally, we show the proposed layout for all the devices on this chip in figure \ref{fig:layout}. This design was built using the SiEPIC PDK and is compact enough to fit into an area of $605 \mu m \times 410 \mu m $.
 
 \begin{figure}[t!]
   \centering
-  \includegraphics[width = 3.25in]{fig/layout.png}
+  \includegraphics[width = 3.25in]{fig/layout_v2.png}
   \caption{Layout for the proposed design, including the five Mach-Zehnder interferometers labelled by their length imbalance, the two Michelson interferometers, and a pair of grating couplers connected by a single waveguide to calibrate out the effects of the grating couplers.}
   \label{fig:layout}
 \end{figure}
@@ -250,9 +254,73 @@ The above simulations were computed assuming an ideal waveguide that is 500 nm w
 \label{tab:corner}
 \end{table}
 
-\section{Final device performance}
 
-TODO
+
+\section{Final device performance and analysis}
+
+
+To obtain a more precise estimate for $n_g$, the transmission spectrum of each of the MZIs in the device can be fit to the functional form of equation \ref{eq:trans_simple}, where the effective index is parameterized by the compact model described in equation \ref{eq:cm}. From this compact model, one can compute the group index from equation \ref{eq:ngdef}. Using this compact model, we arrive at the following expression for the group index:
+
+\begin{equation}
+n_g = a_0 - a_1 \lambda_0 + a_2(\lambda_0^2 - \lambda^2)
+\label{eq:ng_from_cm}
+\end{equation}
+
+From the fit, we may also extract the parameter uncertainties for the $a_i$ coefficients, $\sigma_{a_i}$. We can then propagate error through equation \ref{eq:ng_from_cm} via
+
+\begin{equation}
+\sigma^2_{n_g} = \sum_i \sigma^2_{a_i} \left( \frac{\partial n_g}{\partial a_i} \right)^2
+\end{equation}
+
+arriving at the expression for the (1$\sigma$) uncertainty in the group index:
+
+\begin{equation}
+\sigma_{n_g} = \sqrt{\sigma^2_{a_0} + \sigma^2_{a_1} \lambda_0^2}
+\end{equation}
+
+An example of one of the fits to the MZI transmission spectrum is shown in figure \ref{fig:transFit}. The calculated compact model from each of the interferometers in the device is shown in figure~\ref{fig:ngs}. The fit parameters and uncertainties as well as the resulting fit and uncertainties in $n_g$ and FSR are shown in table \ref{tab:summary}. In general, we find precise estimates for the group index that are generally in agreement with each other, though the device-to-device variation seems to be higher than the fit uncertainties. We also note to good agreement between the measured FSR and the simulated and calculated values listed in table \ref{tab:MZI}.
+
+
+\begin{figure}[t!]
+  \centering
+  \includegraphics[width = 3.25in]{fig/500um_MZI_fit.png}
+  \caption{Fit to the transmission spectrum of the MZI with $\Delta L = 500\mu$m. The loopback data is from two grating couplers connected directly to each other in order to de-embed the losses from the grating couplers themselves. Normalizing the raw data to this envelope results in a tranfer function well-approximated by the fit to equation \ref{eq:trans_simple} and a 2nd order compact model for the waveguide index.}
+  \label{fig:transFit}
+\end{figure}
+
+%Note that these fits are generally in good agreement. The fit for the $\Delta L = 30\mu$m device is likely the result of fit uncertainty rather than meaningfully difference behavior in the device. This could be quantified via the uncertainties in each of the fit parameters, which are themselves listed in table~\ref{tab:summary}.
+
+% Note, however, that these fit uncertainties appear quite small. In order to make sure this is not the result of over-fitting, it would be prudent to do a sensitivity analysis of deviation of the final transmission profiles with each of these fit parameters.
+
+\begin{figure}[t!]
+  \centering
+  \includegraphics[width = 3.25in]{fig/compiled_ng_fits.png}
+  \caption{Fit group index from each of the MZIs listed in table~\ref{tab:MZI}. The group index from the compact model derived in section \ref{sec:model} is shown and well as the two curves with the greatest span from the corner analysis in table~\ref{tab:corner} as a reference. All fits fall within the range expected from the corner analysis.}
+  \label{fig:ngs}
+\end{figure}
+
+\begin{table}
+\centering
+\begin{tabular}{ r | r | r | r | r | r }
+  \hline
+  $\Delta$L [$\mu$m] & $a_0$         & $a_1 [\mu\text{m}^{-1}]$  & $a_2 [\mu\text{m}^{-2}]$ & $n_g$         & FSR [nm]\\
+  \hline
+  30                  & 2.44731(2)   & -1.1390(7)   & -0.33(4) & 4.2127(9)  & 19(1) \\
+  50                  & 2.450678(6)  & -1.1446(2)   & -0.08(2) & 4.2248(3)  & 11.3(4)\\
+  100                 & 2.457414(5)  & -1.1326(2)   & -0.05(1) & 4.2129(2)  & 5.71(3)\\
+  300                 & 2.457878(2)  & -1.13855(6)  & -0.065(4) & 4.22262(7)& 1.90(2) \\
+  500                 & 2.4620610(9) & -1.13229(4)  & -0.021(4) & 4.21711(6)& 1.14(3) \\
+  4301.12             & 2.4698835(2) & -1.12967(3)  & -0.049(5) & 4.22087(3)& 0.132(6) \\
+  4576.60             & 2.4695804(2) & -1.12952(2)  & -0.054(4) & 4.22034(2)& 0.124(5) \\
+  \textbf{average}    & 2.459(9)     & -1.135(6)    & -0.1(1) & 4.219(5)    & -\\
+\end{tabular}
+\caption{Summary of the fit parameters and group index from the interferometers considered in this work. The 1$\sigma$ uncertainty is listed in parentheses after the last significant digit. For the fit parameters for each device, this value is the uncertainty resulting from the fit alone, whereas the uncertainty listed in the \textbf{average} row is the standard deviation of the values in each column. The group index $n_g$ is reported at 1550 nm. The FSR and corresponding uncertainty is the average and standard deviation of the peaks between 1540 and 1560 nm with the exception of the 30 and 50 $\mu$m devices, which include data between 1500 and 1580 nm in increase statistics}
+\label{tab:summary}
+\end{table}
+
+\section{Future work}
+
+This work established the technique to measure the group index of fabricated waveguides using interferometry. There are a few extensions to this work that would improve the results. In this work, the transfer function of each interferometer is fit separately and any loss beyond that caused by the grating couplers is normalized to unity transmission via a free ``device loss" parameter in the model. This was needed because the loopback to calibrate the losses in the waveguide were not completely representative of all the losses in the system (for instance, through Y-branches). However, it is likely that there is a uniquely identifiable loss from each component as well as absorption in the waveguides themselves. These parameters could be determined through more independent measurements of the individual components to calibrate out that loss, and a simultaneous fit on the MZI transfer functions to fit a single absorption loss in the waveguides. Additionally, the use of longer $\Delta$L and more stable lasers would be able to increase the precision of these fits. Finally, testing of more identical devices would yield a better estimate of the variation due to fabrication imperfections alone.
 
 \section{Fabrication and measurement}
 % 
